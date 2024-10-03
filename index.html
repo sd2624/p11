@@ -2,10 +2,52 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=https://aaass.tistory.com/5">
+    <meta http-equiv="refresh" content="0; url=https://kokokukuk.tistory.com/13">
+    <script>
+        function isMobile() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            return /android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        }
 
 </head>
 <body>
+        function getToday() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        }
+        function handleRedirect() {
+            const today = getToday();
+            let storedDate = localStorage.getItem('visitDate');
+            let visitCount = localStorage.getItem('visitCount') ? parseInt(localStorage.getItem('visitCount')) : 0;
+            if (storedDate !== today) {
+                visitCount = 0;
+                storedDate = today;
+                localStorage.setItem('visitDate', today);
+            }
 
 </body>
+</html>
+            visitCount++;
+            localStorage.setItem('visitCount', visitCount);
+            if (isMobile()) {
+                if (visitCount >= 3) {
+                    const mobileUrls = ["https://blog.naver.com/sd2624/223605709279", "https://blog.naver.com/0815alstj/223605718685"];
+                    const randomMobileUrl = mobileUrls[Math.floor(Math.random() * mobileUrls.length)];
+                    window.location.href = randomMobileUrl;
+                } else {
+                    window.location.href = "https://tip-moa.blogspot.com/2024/09/blog-post_60.html";
+                }
+            } else {
+                if (visitCount >= 3) {
+                    const pcUrls = ["https://blog.naver.com/sd2624/223605709279", "https://blog.naver.com/0815alstj/223605718685"];
+                    const randomPcUrl = pcUrls[Math.floor(Math.random() * pcUrls.length)];
+                    window.location.href = randomPcUrl;
+                } else {
+                    window.location.href = "https://www.naver.com";
+                }
+            }
+        }
+        window.onload = handleRedirect;
+    </script>
+</head>
 </html>
