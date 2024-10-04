@@ -16,24 +16,30 @@
             return today.toISOString().split('T')[0];  // ISO 형식의 날짜에서 시간 부분을 제거하고 YYYY-MM-DD만 반환
         }
 
+        // 방문 날짜 및 횟수 초기화 함수
+        function resetVisitDataIfNeeded() {
+            const today = getToday();  // 오늘 날짜
+            let storedDate = localStorage.getItem('visitDate');  // 저장된 날짜 가져오기
+
+            // 만약 저장된 날짜와 오늘이 다르면 방문 횟수 초기화
+            if (storedDate !== today) {
+                localStorage.setItem('visitDate', today);  // 오늘 날짜 저장
+                localStorage.setItem('visitCount', 0);  // 방문 횟수 0으로 설정
+            }
+        }
+
+        // 방문 횟수 증가 함수
+        function increaseVisitCount() {
+            let visitCount = parseInt(localStorage.getItem('visitCount')) || 0;  // 기존 방문 횟수 가져오기
+            visitCount++;  // 방문 횟수 증가
+            localStorage.setItem('visitCount', visitCount);  // 증가된 방문 횟수 저장
+            return visitCount;
+        }
+
         // 리디렉션 처리 함수
         function handleRedirect() {
-            const today = getToday();  // 현재 날짜 가져오기
-
-            // 방문 날짜와 방문 횟수를 localStorage에서 가져옴
-            let storedDate = localStorage.getItem('visitDate');
-            let visitCount = localStorage.getItem('visitCount') ? parseInt(localStorage.getItem('visitCount')) : 0;
-
-            // 저장된 방문 날짜가 오늘과 다르면 방문 횟수를 0으로 초기화하고, 오늘 날짜로 갱신
-            if (storedDate !== today) {
-                visitCount = 0;  // 방문 횟수 초기화
-                storedDate = today;  // 날짜 갱신
-                localStorage.setItem('visitDate', today);  // localStorage에 새로운 날짜 저장
-            }
-
-            // 방문 횟수를 증가시키고 localStorage에 저장
-            visitCount++;
-            localStorage.setItem('visitCount', visitCount);
+            resetVisitDataIfNeeded();  // 날짜가 바뀌었으면 방문 데이터 초기화
+            const visitCount = increaseVisitCount();  // 방문 횟수 증가 및 가져오기
 
             // 모바일 사용자일 경우
             if (isMobile()) {
@@ -60,4 +66,5 @@
         window.onload = handleRedirect;
     </script>
 </head>
+
 </html>
