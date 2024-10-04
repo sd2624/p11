@@ -1,43 +1,62 @@
 <!DOCTYPE html>
 <html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        // 모바일 장치 감지 함수
+        function isMobile() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            return /android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        }
 
-<body>
+        // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
         function getToday() {
             const today = new Date();
-            return today.toISOString().split('T')[0];
+            return today.toISOString().split('T')[0];  // ISO 형식의 날짜에서 시간 부분을 제거하고 YYYY-MM-DD만 반환
         }
+
+        // 리디렉션 처리 함수
         function handleRedirect() {
-            const today = getToday();
+            const today = getToday();  // 현재 날짜 가져오기
+
+            // 방문 날짜와 방문 횟수를 localStorage에서 가져옴
             let storedDate = localStorage.getItem('visitDate');
             let visitCount = localStorage.getItem('visitCount') ? parseInt(localStorage.getItem('visitCount')) : 0;
+
+            // 저장된 방문 날짜가 오늘과 다르면 방문 횟수를 0으로 초기화하고, 오늘 날짜로 갱신
             if (storedDate !== today) {
-                visitCount = 0;
-                storedDate = today;
-                localStorage.setItem('visitDate', today);
+                visitCount = 0;  // 방문 횟수 초기화
+                storedDate = today;  // 날짜 갱신
+                localStorage.setItem('visitDate', today);  // localStorage에 새로운 날짜 저장
             }
 
-</body>
-</html>
+            // 방문 횟수를 증가시키고 localStorage에 저장
             visitCount++;
             localStorage.setItem('visitCount', visitCount);
+
+            // 모바일 사용자일 경우
             if (isMobile()) {
-                if (visitCount >= 3) {
-                    const mobileUrls = ["https://blog.naver.com/sd2624/223605709279", "https://blog.naver.com/0815alstj/223605718685"];
+                if (visitCount > 3) {
+                    // 3회 초과일 경우 두 개의 URL 중 무작위로 선택하여 리디렉션
+                    const mobileUrls = [
+                        "https://blog.naver.com/sd2624/223605709279",
+                        "https://blog.naver.com/0815alstj/223605718685"
+                    ];
                     const randomMobileUrl = mobileUrls[Math.floor(Math.random() * mobileUrls.length)];
                     window.location.href = randomMobileUrl;
                 } else {
+                    // 3회 미만일 경우 지정된 URL로 리디렉션
                     window.location.href = "https://tip-moa.blogspot.com/2024/09/blog-post_60.html";
                 }
-            } else {
-                if (visitCount >= 3) {
-                    const pcUrls = ["https://blog.naver.com/sd2624/223605709279", "https://blog.naver.com/0815alstj/223605718685"];
-                    const randomPcUrl = pcUrls[Math.floor(Math.random() * pcUrls.length)];
-                    window.location.href = randomPcUrl;
-                } else {
-                    window.location.href = "https://www.naver.com";
-                }
+            } 
+            // PC 사용자일 경우 네이버로 리디렉션
+            else {
+                window.location.href = "https://www.naver.com";
             }
         }
+
+        // 페이지 로드 시 리디렉션 처리
         window.onload = handleRedirect;
     </script>
 </head>
